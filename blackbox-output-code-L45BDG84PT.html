@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 House Responsibilities Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .week-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .week-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #51cf66;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #40c057;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid #4facfe;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .task-card.current {
+            border-color: #4facfe;
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .task-card.completed {
+            border-color: #51cf66;
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5e8 100%);
+        }
+
+        .task-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .current-label {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+
+        .user {
+            padding: 6px 12px;
+            background: #dee2e6;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .user.current {
+            background: #4facfe;
+            color: white;
+            border-color: #3a8bd7;
+            animation: pulse 2s infinite;
+        }
+
+        .complete-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .password-section {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            margin-bottom: 20px;
+        }
+
+        .password-input, .week-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .password-input:focus, .week-input:focus {
+            outline: none;
+            border-color: #e0a800;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
+        }
+
+        .admin-panel {
+            background: #d4edda;
+            border-left-color: #28a745;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status.admin {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .status.locked {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 172, 254, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 172, 254, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 172, 254, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .task-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-display {
+                font-size: 2.2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #51cf66;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="week-display" id="weekDisplay">Week 13</div>
+            <div class="week-controls">
+                <button class="btn btn-primary" onclick="prevWeek()">
+                    ← Previous Week
+                </button>
+                <button class="btn btn-success" onclick="nextWeek()">
+                    Next Week →
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section password-section" id="passwordSection">
+                <h2>🔐 Admin Access Required</h2>
+                <div id="status" class="status locked">
+                    🔒 Please enter admin password to manage tasks and set week number
+                </div>
+                <input type="password" class="password-input" id="adminPassword" placeholder="Enter admin password">
+                <button class="btn btn-primary" onclick="checkPassword()" style="width: 100%;">Unlock Admin Panel</button>
+                <div id="passwordError" style="color: #dc3545; font-weight: bold; margin-top: 10px; display: none;">❌ Incorrect password!</div>
+            </div>
+
+            <div class="admin-panel" id="adminPanel" style="display: none;">
+                <h2>⚙️ Admin Panel</h2>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: end;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Set Current Week:</label>
+                        <input type="number" class="week-input" id="weekInput" min="1" value="13">
+                    </div>
+                    <button class="btn btn-success" onclick="setWeekNumber()" style="padding: 15px 30px;">
+                        📅 Update Week
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🗑️ Trash Duty</h2>
+                <div class="task-card current" id="trashCard">
+                    <div class="task-title">Current: <span id="trashCurrent" class="current-label">Kanchan</span></div>
+                    <div class="user-list" id="trashUsers"></div>
+                    <button class="btn btn-success complete-btn" onclick="completeTask('trash')" id="trashBtn">
+                        ✅ Mark Completed
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧹 Mopping & Brooming</h2>
+                <div class="task-card current" id="moppingCard">
+                    <div class="task-title">Current: <span id="moppingCurrent" class="current-label">Ravalika</span></div>
+                    <div class="user-list" id="moppingUsers"></div>
+                    <button class="btn btn-success complete-btn" onclick="completeTask('mopping')" id="moppingBtn">
+                        ✅ Mark Completed
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🍳 Kitchen (Stove & Chimney)</h2>
+                <div class="task-card current" id="kitchenCard">
+                    <div class="task-title">Current: <span id="kitchenCurrent" class="current-label">Kanchan</span></div>
+                    <div class="user-list" id="kitchenUsers"></div>
+                    <button class="btn btn-success complete-btn" onclick="completeTask('kitchen')" id="kitchenBtn">
+                        ✅ Mark Completed
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const ADMIN_PASSWORD = 'house123'; // Change this password
+        
+        let currentWeek = 13;
+        let isAdmin = false;
+
+        const responsibilities = {
+            trash: ['Kanchan', 'Uday', 'Ankit', 'Shubham', 'Ravalika', 'Shivani', 'Kanchan'],
+            mopping: ['Ravalika', 'Ankit', 'Uday', 'Kanchan', 'Shivani', 'Shubham'],
+            kitchen: ['Kanchan', 'Shivani', 'Uday', 'Ankit', 'Shubham', 'Ravalika']
+        };
+
+        let currentPositions = {
+            trash: 0,
+            mopping: 0,
+            kitchen: 0
+        };
+
+        // Initialize app
+        function init() {
+            loadData();
+            updateDisplay();
+            updateButtons();
+        }
+
+        function updateDisplay() {
+            document.getElementById('weekDisplay').textContent = `Week ${currentWeek}`;
+            document.getElementById('weekInput').value = currentWeek;
+            
+            updateTaskDisplay('trash');
+            updateTaskDisplay('mopping');
+            updateTaskDisplay('kitchen');
+        }
+
+        function updateTaskDisplay(taskType) {
+            const currentUser = responsibilities[taskType][currentPositions[taskType]];
+            const currentEl = document.getElementById(taskType + 'Current');
+            const usersEl = document.getElementById(taskType + 'Users');
+            
+            currentEl.textContent = currentUser;
+            
+            usersEl.innerHTML = responsibilities[taskType].map((user, index) => {
+                const span = document.createElement('span');
+                span.className = 'user';
+                if (index === currentPositions[taskType]) {
+                    span.classList.add('current');
+                    span.textContent = `${user} (Current)`;
+                } else {
+                    span.textContent = user;
+                }
+                return span.outerHTML;
+            }).join('');
+        }
+
+        function updateButtons() {
+            const buttons = ['trashBtn', 'moppingBtn', 'kitchenBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (isAdmin) {
+                    btn.disabled = false;
+                } else {
+                    btn.disabled = true;
+                    btn.textContent = '🔒 Admin Required';
+                }
+            });
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                document.getElementById('passwordSection').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('status').className = 'status admin';
+                document.getElementById('status').innerHTML = '✅ Admin access granted! You can now manage all tasks.';
+                updateButtons();
+                showNotification('🔓 Admin access granted!');
+                saveData();
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('passwordError').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function completeTask(taskType) {
+            if (!isAdmin) {
+                alert('⚠️ Admin access required!');
+                return;
+            }
+
+            currentPositions[taskType] = (currentPositions[taskType] + 1) % responsibilities[taskType].length;
+            saveData();
+            updateTaskDisplay(taskType);
+            showNotification(`✅ ${taskType.charAt(0).toUpperCase() + taskType.slice(1)} duty completed! Next person assigned.`);
+        }
+
+        function setWeekNumber() {
+            if (!isAdmin) return;
+            
+            const newWeek = parseInt(document.getElementById('weekInput').value);
+            if (newWeek >= 1) {
+                currentWeek = newWeek;
+                saveData();
+                updateDisplay();
+                showNotification(`📅 Week updated to Week ${currentWeek}`);
+            } else {
+                alert('Week number must be 1 or higher!');
+            }
+        }
+
+        function nextWeek() {
+            if (!isAdmin) {
+                alert('⚠️ Admin access required to change weeks!');
+                return;
+            }
+            currentWeek++;
+            saveData();
+            updateDisplay();
+            showNotification(`📅 Moved to Week ${currentWeek}`);
+        }
+
+        function prevWeek() {
+            if (!isAdmin || currentWeek <= 1) {
+                alert('⚠️ Admin access required or already at Week 1!');
+                return;
+            }
+            currentWeek--;
+            saveData();
+            updateDisplay();
+            showNotification(`📅 Moved to Week ${currentWeek}`);
+        }
+
+        function saveData() {
+            const data = {
+                currentWeek,
+                currentPositions,
+                responsibilities,
+                isAdmin
+            };
+            localStorage.setItem('houseResponsibilities_v2', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('houseResponsibilities_v2');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    currentWeek = data.currentWeek || 13;
+                    currentPositions = data.currentPositions || { trash: 0, mopping: 0, kitchen: 0 };
+                    responsibilities.trash = data.responsibilities?.trash || ['Kanchan', 'Uday', 'Ankit', 'Shubham', 'Ravalika', 'Shivani', 'Kanchan'];
+                    responsibilities.mopping = data.responsibilities?.mopping || ['Ravalika', 'Ankit', 'Uday', 'Kanchan', 'Shivani', 'Shubham'];
+                    responsibilities.kitchen = data.responsibilities?.kitchen || ['Kanchan', 'Shivani', 'Uday', 'Ankit', 'Shubham', 'Ravalika'];
+                    isAdmin = data.isAdmin || false;
+                } catch (e) {
+                    console.log('Error loading data, using defaults');
+                }
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>
