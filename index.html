@@ -348,9 +348,9 @@
             <div class="section">
                 <h2>🚿 Bathroom Cleaning</h2>
                 <div class="task-card current" id="bathroomCard">
-                    <div class="task-title">Current: <span id="trashCurrent" class="current-label">Uday</span></div>
+                    <div class="task-title">Current: <span id="bathroomCurrent" class="current-label">Uday</span></div>
                     <div class="user-list" id="bathroomUsers"></div>
-                    <button class="btn btn-success complete-btn" onclick="completeTask('trash')" id="trashBtn">
+                    <button class="btn btn-success complete-btn" onclick="completeTask('bathroom')" id="bathroomBtn">
                         ✅ Mark Completed
                     </button>
                 </div>
@@ -526,7 +526,7 @@
                     currentPositions = data.currentPositions || { trash: 0, mopping: 0, bathroom: 0, kitchen: 0 };
                     responsibilities.trash = data.responsibilities?.trash || ['Kanchan', 'Uday', 'Ankit', 'Shubham', 'Ravalika', 'Shivani', 'Kanchan'];
                     responsibilities.mopping = data.responsibilities?.mopping || ['Ravalika', 'Ankit', 'Uday', 'Kanchan', 'Shivani', 'Shubham'];
-                    responsibilities.bathroom = data.responsibilities?.bathroom || ['Uday', 'Kanchan', 'Shivani', 'Shivani', 'Ravalika', 'Ankit'];
+                    responsibilities.bathroom = data.responsibilities?.bathroom || ['Uday', 'Kanchan', 'Shivani', 'Shubham', 'Ravalika', 'Ankit'];
                     responsibilities.kitchen = data.responsibilities?.kitchen || ['Kanchan', 'Shivani', 'Uday', 'Ankit', 'Shubham', 'Ravalika'];
                     isAdmin = data.isAdmin || false;
                 } catch (e) {
