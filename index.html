@@ -355,6 +355,7 @@
                     </button>
                 </div>
             </div>
+            
             <div class="section">
                 <h2>🍳 Kitchen (Stove & Chimney)</h2>
                 <div class="task-card current" id="kitchenCard">
@@ -522,7 +523,7 @@
                 try {
                     const data = JSON.parse(saved);
                     currentWeek = data.currentWeek || 13;
-                    currentPositions = data.currentPositions || { trash: 0, mopping: 0, kitchen: 0 };
+                    currentPositions = data.currentPositions || { trash: 0, mopping: 0, bathroom: 0, kitchen: 0 };
                     responsibilities.trash = data.responsibilities?.trash || ['Kanchan', 'Uday', 'Ankit', 'Shubham', 'Ravalika', 'Shivani', 'Kanchan'];
                     responsibilities.mopping = data.responsibilities?.mopping || ['Ravalika', 'Ankit', 'Uday', 'Kanchan', 'Shivani', 'Shubham'];
                     responsibilities.bathroom = data.responsibilities?.bathroom || ['Uday', 'Kanchan', 'Shivani', 'Shivani', 'Ravalika', 'Ankit'];
